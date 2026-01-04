@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "GoBilda TeleOp (Stable Launcher)", group = "Linear OpMode")
-public class CoZmic extends LinearOpMode {
+public class TeleOP extends LinearOpMode {
 
     // --- Drive Motors ---
     private DcMotor backLeft;
