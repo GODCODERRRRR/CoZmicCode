@@ -30,7 +30,7 @@ public class TeleOP extends LinearOpMode {
     public static final double TARGET_RPM = 999;
     public static final double TARGET_VELOCITY = (TARGET_RPM / 60.0) * TICKS_PER_REV * GEAR_RATIO;
 
-    // --- Servo Constants ---
+    // ---Servo Constants---
     public static final double SERVO_HOME = 0.5;
     public static final double SERVO_PUSH = 0.0;
     public static final double SERVO_REVERSE = 1.0;
