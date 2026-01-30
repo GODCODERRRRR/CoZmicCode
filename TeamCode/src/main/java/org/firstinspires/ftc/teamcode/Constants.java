@@ -40,11 +40,10 @@ public class Constants {
                 .pathConstraints(pathConstraints)
                 .mecanumDrivetrain(driveConstants)
                 .driveEncoderLocalizer(localizerConstants).build();
-                .build();
 
 
 
-}
+    }
 
     private static void build() {
     }}

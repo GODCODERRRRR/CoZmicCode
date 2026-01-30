@@ -35,8 +35,10 @@ public class TeleOP extends LinearOpMode {
     public static final double SERVO_PUSH = 0.0;
     public static final double SERVO_REVERSE = 1.0;
 
+    // --- Drive Constants ---
+    public static final double DEADZONE = 0.05;
+
     // --- PIDF Tune (for GoBilda Yellow Jacket motor) ---
-    // Adjust if needed — these are stable baseline values.
     private static final PIDFCoefficients LAUNCH_PIDF = new PIDFCoefficients(30.0, 0.0, 12.0, 12.0);
 
     @Override
@@ -84,16 +86,23 @@ public class TeleOP extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            // --- Mecanum Drive ---
+            // --- Mecanum Drive with Deadzone ---
             double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x * 1.1;
+            double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
 
+            // Apply deadzone to prevent jumping from stick drift
+            if (Math.abs(y) < DEADZONE) y = 0;
+            if (Math.abs(x) < DEADZONE) x = 0;
+            if (Math.abs(rx) < DEADZONE) rx = 0;
+
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
+            // Fixed mecanum strafe formula
             double topLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
+            double backLeftPower = (y + x + rx) / denominator;
             double topRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
+            double backRightPower = (y - x - rx) / denominator;
 
             topLeft.setPower(topLeftPower);
             backLeft.setPower(backLeftPower);
@@ -102,21 +111,18 @@ public class TeleOP extends LinearOpMode {
 
             // --- Launcher Control ---
             if (gamepad1.a && !launcherOn) {
-                // Turn on and allow spin-up delay
                 launchingMotor.setVelocity(TARGET_VELOCITY);
                 launcherOn = true;
                 launchSpinUpTime = System.currentTimeMillis();
             }
 
             if (gamepad1.x) {
-                // Stop launcher
                 launchingMotor.setVelocity(0);
                 launcherOn = false;
             }
 
             // --- Servo Control ---
             if (gamepad1.b) {
-                // Only feed balls after spin-up delay (e.g., 1.2 sec)
                 if (launcherOn && (System.currentTimeMillis() - launchSpinUpTime) > 1200) {
                     leftMover.setPosition(SERVO_PUSH);
                     rightMover.setPosition(SERVO_PUSH);
@@ -129,7 +135,7 @@ public class TeleOP extends LinearOpMode {
                 rightMover.setPosition(SERVO_HOME);
             }
 
-            // --- Telemetry for tuning ---
+            // --- Telemetry ---
             double currentVelocity = launchingMotor.getVelocity();
             double currentRPM = (currentVelocity / TICKS_PER_REV / GEAR_RATIO) * 60;
             double error = TARGET_RPM - currentRPM;
