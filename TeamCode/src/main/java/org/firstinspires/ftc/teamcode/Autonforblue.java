@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 @Autonomous
-public class Auton extends OpMode {
+public class Autonforblue extends OpMode {
     enum State { // Steps
         Start,
         SecondStep,
@@ -118,14 +119,14 @@ public class Auton extends OpMode {
                 break;
             case Turning:
                 if (getRuntime() >= lastTime + c){// same thing as above
-                    drive.drive(0,-1,0);
+                    drive.drive(0,1,0);
                     lastTime = getRuntime();
                     state = State.Finally;
                 }
                 break;
             case Finally:
                 if (getRuntime() >= lastTime + 1.15){
-                    drive.drive(-1,0,0); //finally ends in loading zone
+                    drive.drive(1,0,0); //finally ends in loading zone
                     lastTime = getRuntime();
                     state = State.Done;
                 }
